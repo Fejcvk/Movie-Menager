@@ -26,7 +26,7 @@ namespace lab5
         {
             movies = new List<Movie>();
             InitializeComponent();
-            //myGrid.ItemsSource = movies;
+            myGrid.ItemsSource = movies;
             
         }
     }

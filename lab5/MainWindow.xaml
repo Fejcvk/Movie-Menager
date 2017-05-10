@@ -24,12 +24,14 @@
             <Canvas />
 
         </DockPanel>
-        <TabControl x:Name="tabControl" TabStripPlacement="Right" HorizontalAlignment="Stretch" Height="Auto" VerticalAlignment="Stretch" Margin="0,22,0,-22" BorderThickness="4" MinWidth="6">
-            <TabItem Header="Edit">
-                <Grid Background="{StaticResource windowBackground}"/>
-            </TabItem>
+        <TabControl x:Name="tabControl" TabStripPlacement="Right" HorizontalAlignment="Stretch" Height="Auto" VerticalAlignment="Stretch" Margin="0,22,-0.4,0.4" BorderThickness="4" MinWidth="6">
             <TabItem Header="View">
                 <Grid Background="{StaticResource windowBackground}"/>
+            </TabItem>
+            <TabItem Header="Edit">
+                <Grid Background="{StaticResource windowBackground}">
+                    <DataGrid HorizontalAlignment="Left" Height="526" Margin="10,10,-0.4,0" VerticalAlignment="Top" Width="732" x:Name="myGrid" ItemsSource="{Binding movies}" Background="Transparent"/>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>
