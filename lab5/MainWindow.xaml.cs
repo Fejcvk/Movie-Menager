@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,25 +21,39 @@ namespace lab5
     /// </summary>
     public partial class MainWindow : Window
     {
-        public List<Movie> movies { get; set; }
-       
+        private ObservableCollection<Movie> movies;
         public MainWindow()
         {
-            movies = new List<Movie>();
+            movies = new ObservableCollection<Movie>();
             InitializeComponent();
             myGrid.ItemsSource = movies;
-            
+            MyList.ItemsSource = movies;
         }
     }
-    public class Movie 
+
+    public class Movie
     {
         public string Title { get; set; }
         public string Director { get; set; }
-        public Score Score { get; set;}
-        public MovieType Type { get; set;}
-
+        public Score Score { get; set; }
+        public MovieType Type { get; set; }
     }
 
-    public enum Score { Terrible, Bad, OK, Good, Awesome };
-    public enum MovieType { Thriller, Comedy, Drama, Horror };
+
+    public enum Score
+    {
+        Terrible,
+        Bad,
+        Ok,
+        Good,
+        Awesome
+    };
+
+    public enum MovieType
+    {
+        Thriller,
+        Comedy,
+        Drama,
+        Horror
+    };
 }
