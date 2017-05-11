@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,11 +22,18 @@ namespace lab5
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableCollection<Movie> movies;
+        public ObservableCollection<Movie> movies;
+        private bool CustomFilter(object item)
+        {
+            Movie movie = item as Movie;
+            return movie.Title.Contains("Test");
+        }
         public MainWindow()
         {
             movies = new ObservableCollection<Movie>();
             InitializeComponent();
+            //ICollectionView movieView = CollectionViewSource.GetDefaultView(movies);
+            //movieView.Filter = CustomFilter;
             myGrid.ItemsSource = movies;
             MyList.ItemsSource = movies;
         }

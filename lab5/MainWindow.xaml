@@ -12,6 +12,17 @@
             <GradientStop Color=" #b2ffb4" Offset="1"/>
         </LinearGradientBrush>
         <c:Movie x:Key="myDataSource"/>
+
+        <Style TargetType="{x:Type ListBoxItem}">
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                    <Setter Property="Background" Value="#b5d1ff"></Setter>
+                </Trigger>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="Yellow"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid  Background="{StaticResource windowBackground}">
         <DockPanel>
@@ -25,13 +36,29 @@
             <Canvas />
 
         </DockPanel>
-        <TabControl x:Name="tabControl" TabStripPlacement="Right" HorizontalAlignment="Stretch" Height="Auto" VerticalAlignment="Stretch" Margin="0,22,-0.4,0.4" BorderThickness="4" MinWidth="6">
+        <TabControl x:Name="tabControl" TabStripPlacement="Right" HorizontalAlignment="Stretch"
+                    Height="Auto" VerticalAlignment="Stretch" Margin="0,22,-0.4,0.4" BorderThickness="4" MinWidth="6">
             <TabItem Header="View">
                 <Grid Background="{StaticResource windowBackground}">
-                    <ListBox x:Name="MyList" ItemsSource="{Binding Source={StaticResource myDataSource}}" Margin="0,0,0,-8" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" >
+                    <ListBox x:Name="MyList" ItemsSource="{Binding Source={StaticResource myDataSource}}" 
+                             Margin="0,0,0,-8" Background="Transparent" 
+                             HorizontalContentAlignment="Stretch" VerticalAlignment="Top"
+                             AlternationCount="2" >
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Style.Triggers>
+                                    <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                        <Setter Property="Background" Value="#b5d1ff"></Setter>
+                                    </Trigger>
+                                    <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                        <Setter Property="Background" Value=" #edf3ff"></Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid >
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition/>
                                         <ColumnDefinition Width="*"/>
