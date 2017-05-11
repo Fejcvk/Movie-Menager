@@ -22,21 +22,53 @@ namespace lab5
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<Movie> movies;
-        private bool CustomFilter(object item)
-        {
-            Movie movie = item as Movie;
-            return movie.Title.Contains("Test");
-        }
+        public ObservableCollection<Movie> movies { get; set; }
+
         public MainWindow()
         {
+            this.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
             movies = new ObservableCollection<Movie>();
+            this.DataContext = movies;
             InitializeComponent();
-            //ICollectionView movieView = CollectionViewSource.GetDefaultView(movies);
-            //movieView.Filter = CustomFilter;
-            myGrid.ItemsSource = movies;
-            MyList.ItemsSource = movies;
         }
+
+        #region //MenuItem
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Random rand = new Random();
+            string[] titles =
+            {
+                "Test1", "Test2", "Test3", "Test4", "Test5", "Test6", "Test7", "Test8", "Test9", "Test10"
+            };
+            string[] directors =
+            {
+                "TestD1", "TestD2", "TestD3", "TestD4", "TestD5", "TestD6", "TestD7", "TestD8", "TestD9", "TestD10"
+            };
+
+            for (int i = 0; i < 10; i++)
+            {
+                movies.Add(new Movie()
+                {
+                    Title = titles[rand.Next(0, 9)],
+                    Director = directors[rand.Next(0, 9)],
+                    Score = (Score) rand.Next(0, 5),
+                    Type = (MovieType) rand.Next(0, 4)
+                });
+            }
+        }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("There is no help", "Help", MessageBoxButton.OK);
+        }
+
+        private void MenuItem_Click_2(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        #endregion
     }
 
     public class Movie
@@ -47,7 +79,7 @@ namespace lab5
         public MovieType Type { get; set; }
     }
 
-
+    #region Enums
     public enum Score
     {
         Terrible,
@@ -64,4 +96,5 @@ namespace lab5
         Drama,
         Horror
     };
+    #endregion
 }

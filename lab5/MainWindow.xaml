@@ -11,78 +11,51 @@
             <GradientStop Color="#007c04" Offset="0"/>
             <GradientStop Color=" #b2ffb4" Offset="1"/>
         </LinearGradientBrush>
-        <c:Movie x:Key="myDataSource"/>
+        <CollectionViewSource x:Key="MoviesCvs" Source="{Binding}"/>
 
-        <Style TargetType="{x:Type ListBoxItem}">
+        <Style x:Key="AlternatingListViewItemStyle" TargetType="{x:Type ListBoxItem}">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                    <Setter Property="Background" Value="#b5d1ff"></Setter>
+                    <Setter Property="Background" Value="#b5d1ff"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="FontSize" Value="18"/>
+                    <Setter Property="Background" Value="#b4ceab"/>
                 </Trigger>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                    <Setter Property="Background" Value="Yellow"></Setter>
+                    <Setter Property="Background" Value=" #edf3ff"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
     </Window.Resources>
     <Grid  Background="{StaticResource windowBackground}">
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_Menu">
-                    <MenuItem Header="_Help"/>
-                    <MenuItem Header="_Add movies"/>
-                    <MenuItem Header="_Exit"/>
+                    <MenuItem Header="_Help" Click="MenuItem_Click_1"/>
+                    <MenuItem Header="_Add movies" Click="MenuItem_Click"/>
+                    <MenuItem Header="_Exit" Click="MenuItem_Click_2"/>
                 </MenuItem>
             </Menu>
             <Canvas />
 
         </DockPanel>
-        <TabControl x:Name="tabControl" TabStripPlacement="Right" HorizontalAlignment="Stretch"
-                    Height="Auto" VerticalAlignment="Stretch" Margin="0,22,-0.4,0.4" BorderThickness="4" MinWidth="6">
+        <TabControl TabStripPlacement="Right" HorizontalAlignment="Stretch"
+                    Height="Auto" VerticalAlignment="Stretch" Margin="0,22,-0.4,0.4" Background="Transparent">
             <TabItem Header="View">
-                <Grid Background="{StaticResource windowBackground}">
-                    <ListBox x:Name="MyList" ItemsSource="{Binding Source={StaticResource myDataSource}}" 
-                             Margin="0,0,0,-8" Background="Transparent" 
-                             HorizontalContentAlignment="Stretch" VerticalAlignment="Top"
+                <Grid>
+                    <ListBox ItemsSource="{Binding Source={StaticResource MoviesCvs}}" 
+                             Margin="0,0,0,-8" Background="Transparent" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}"
                              AlternationCount="2" >
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListBoxItem}">
-                                <Style.Triggers>
-                                    <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                        <Setter Property="Background" Value="#b5d1ff"></Setter>
-                                    </Trigger>
-                                    <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                        <Setter Property="Background" Value=" #edf3ff"></Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <StackPanel Grid.Row="0" Margin="5,5,5,5">
-                                        <TextBlock>
-                                            <Run Text="Tilte:"/>
-                                            <Run Text="{Binding Title}"/>
-                                        </TextBlock>
-                                        <TextBlock>
-                                            <Run Text="Director:"/>
-                                            <Run Text="{Binding Director}"/>
-                                        </TextBlock>
-                                        <TextBlock>    
-                                            <Run Text="Rating:"/>
-                                            <Run Text="{Binding Score}"/>
-                                        </TextBlock>
-                                        <TextBlock>
-                                            <Run Text="Type:"/>
-                                            <Run Text="{Binding Type}"/>
-                                        </TextBlock>
+                                    <StackPanel  Margin="5,5,5,5">
+                                        <TextBlock Text="{Binding Title, StringFormat='Title: {0}'}"/>
+                                        <TextBlock Text="{Binding Director, StringFormat='Director: {0}'}"/>
+                                        <TextBlock Text="{Binding Score, StringFormat='Rating: {0}'}"/>
+                                        <TextBlock Text="{Binding Type, StringFormat='Type: {0}'}"/>
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>
@@ -92,7 +65,7 @@
             </TabItem>
             <TabItem Header="Edit">
                 <Grid Background="{StaticResource windowBackground}">
-                    <DataGrid Margin="10,10,-0.4,0" x:Name="myGrid" ItemsSource="{Binding movies}" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalAlignment="Top"/>
+                    <DataGrid Margin="10,10,-0.4,0" ItemsSource="{Binding}" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
         </TabControl>
