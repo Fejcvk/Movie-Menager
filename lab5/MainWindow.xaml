@@ -3,7 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:c="clr-namespace:lab5"
+        xmlns:local="clr-namespace:lab5"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Movies menager" Height="600 " Width="800" MinHeight="400" MinWidth="600">
     <Window.Resources>
@@ -12,7 +13,6 @@
             <GradientStop Color=" #b2ffb4" Offset="1"/>
         </LinearGradientBrush>
         <CollectionViewSource x:Key="MoviesCvs" Source="{Binding}"/>
-
         <Style x:Key="AlternatingListViewItemStyle" TargetType="{x:Type ListBoxItem}">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="0">
@@ -27,15 +27,31 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+        <ObjectDataProvider x:Key="scoreDataFromEnum" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:Score"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="typeDataFromEnum" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:MovieType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </Window.Resources>
     <Grid  Background="{StaticResource windowBackground}">
         <DockPanel>
             <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Import movies" Click="Import"/>
+                    <MenuItem Header="_Export movies" Click="Export"/>
+                </MenuItem>
                 <MenuItem Header="_Menu">
-                    <MenuItem Header="_Help" Click="MenuItem_Click_1"/>
-                    <MenuItem Header="_Add movies" Click="MenuItem_Click"/>
-                    <MenuItem Header="_Exit" Click="MenuItem_Click_2"/>
+                    <MenuItem Header="_Help" Click="Help"/>
+                    <MenuItem Header="_Add movies" Click="Add"/>
+                    <MenuItem Header="_Delete all the movies" Click="Clear"/>
+                    <MenuItem Header="_Exit" Click="Exit"/>
                 </MenuItem>
             </Menu>
             <Canvas />
@@ -54,8 +70,8 @@
                                     <StackPanel  Margin="5,5,5,5">
                                         <TextBlock Text="{Binding Title, StringFormat='Title: {0}'}"/>
                                         <TextBlock Text="{Binding Director, StringFormat='Director: {0}'}"/>
-                                        <TextBlock Text="{Binding Score, StringFormat='Rating: {0}'}"/>
-                                        <TextBlock Text="{Binding Type, StringFormat='Type: {0}'}"/>
+                                        <TextBlock Name="ScoreBlock" Text="{Binding Score, StringFormat='Rating: {0}'}" Visibility="Collapsed"/>
+                                        <TextBlock Name="TypeBlock" Text="{Binding Type, StringFormat='Type: {0}'}" Visibility="Collapsed"/>
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>
@@ -63,8 +79,37 @@
                     </ListBox>
                 </Grid>
             </TabItem>
+            <TabItem Header="Search">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="150"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Name="CheckBoxPanel" Margin="0,0,581.4,0.4">
+                        <CheckBox Margin="6" Name="titleCBox">By title</CheckBox>
+                        <CheckBox Margin="6" Name="authorCBox">By author</CheckBox>
+                        <CheckBox Margin="6" Name="scoreCBox">By rating</CheckBox>
+                        <CheckBox Margin="6" Name="typeCBox">By type</CheckBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row ="0" Name="BoxPanel" Margin="237,0,0.4,0.4">
+                        <TextBox Name="titleBox" IsEnabled="{Binding ElementName=titleCBox, Path=IsChecked}" Text="type title" Height="23"/>
+                        <TextBox x:Name="directorBox" Margin="0,6" IsEnabled="{Binding ElementName=authorCBox, Path=IsChecked}" Text="type director" Height="24"/>
+                        <ComboBox Name="ScoreComboBox" ItemsSource="{Binding Source={StaticResource scoreDataFromEnum}}"
+                                  SelectedItem="{Binding Path=CurrentScore}" Height="20" Margin="185,0,180.8,0" Width="140" IsEnabled="{Binding ElementName=scoreCBox, Path=IsChecked}">
+                        </ComboBox>
+                        <ComboBox Name="TypeComboBox" Margin ="185,6,180.8,6" ItemsSource="{Binding Source={StaticResource typeDataFromEnum}}"
+                                  SelectedItem="{Binding Path=CurrentType}" Height="20" IsEnabled="{Binding ElementName=typeCBox, Path=IsChecked}" Width="140">
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Name="ButtonPanel" Margin="10,0" Orientation="Horizontal" Grid.Row="1">
+                        <Button Content="Find movies" HorizontalAlignment="Right" Width="145" Click="Find_Click"/>
+                        <Button Content="Delete movies" Margin="10,0" HorizontalAlignment="Right" Width="143"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
             <TabItem Header="Edit">
-                <Grid Background="{StaticResource windowBackground}">
+                <Grid>
                     <DataGrid Margin="10,10,-0.4,0" ItemsSource="{Binding}" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>

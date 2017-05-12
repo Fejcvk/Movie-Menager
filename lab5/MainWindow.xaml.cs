@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using lab5.Annotations;
 
 namespace lab5
 {
@@ -30,11 +33,13 @@ namespace lab5
             movies = new ObservableCollection<Movie>();
             this.DataContext = movies;
             InitializeComponent();
+            ScoreComboBox.ItemsSource = Enum.GetValues(typeof(Score)).Cast<Score>();
+            TypeComboBox.ItemsSource = Enum.GetValues(typeof(MovieType)).Cast<MovieType>();
         }
 
         #region //MenuItem
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void Add(object sender, RoutedEventArgs e)
         {
             Random rand = new Random();
             string[] titles =
@@ -58,21 +63,39 @@ namespace lab5
             }
         }
 
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        private void Help(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("There is no help", "Help", MessageBoxButton.OK);
         }
 
-        private void MenuItem_Click_2(object sender, RoutedEventArgs e)
+        private void Exit(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        #endregion
-    }
+        private void Clear(object sender, RoutedEventArgs e)
+        {
+            movies.Clear();
+        }
 
+        private void Import(object sender, RoutedEventArgs e)
+        {
+            //TODO : Deserializacja XML i zaladowanie tego na liste
+        }
+
+        private void Export(object sender, RoutedEventArgs e)
+        {
+            //TODO : Serializacja zawartosci listy i zapisanie tego w pliku XML
+        }
+        #endregion
+
+        private void Find_Click(object sender, RoutedEventArgs e)
+        {
+            ;
+        }
+    }
     public class Movie
-    {
+    { 
         public string Title { get; set; }
         public string Director { get; set; }
         public Score Score { get; set; }
