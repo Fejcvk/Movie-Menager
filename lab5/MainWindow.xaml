@@ -12,7 +12,11 @@
             <GradientStop Color="#007c04" Offset="0"/>
             <GradientStop Color=" #b2ffb4" Offset="1"/>
         </LinearGradientBrush>
-        <CollectionViewSource x:Key="MoviesCvs" Source="{Binding}"/>
+        <CollectionViewSource x:Key="MoviesCvs" Source="{Binding}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="ScoreType"/>
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
         <Style x:Key="AlternatingListViewItemStyle" TargetType="{x:Type ListBoxItem}">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="0">
@@ -41,7 +45,7 @@
         </ObjectDataProvider>
         <ControlTemplate x:Key="ValidationErrorTemplate">
             <DockPanel>
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                     <Grid Width="12" Height="12">
                         <Ellipse Width="12" Height="12" 
 
@@ -83,7 +87,6 @@
                 </MenuItem>
             </Menu>
             <Canvas />
-
         </DockPanel>
         <TabControl TabStripPlacement="Right" HorizontalAlignment="Stretch"
                     Height="Auto" VerticalAlignment="Stretch" Margin="0,22,-0.4,0.4" Background="Transparent">
@@ -123,11 +126,10 @@
                         <CheckBox Margin="6" Name="scoreCBox">By rating</CheckBox>
                         <CheckBox Margin="6" Name="typeCBox">By type</CheckBox>
                     </StackPanel>
-                    <StackPanel Grid.Row ="0" Name="TextBoxPanel" Margin="237,0,0.4,0.4">
+                    <StackPanel Grid.Row ="0" Name="TextBoxPanel" Margin="195,0,0.2,0.4">
                         <TextBox Name="titleBox" IsEnabled="{Binding ElementName=titleCBox, Path=IsChecked}" 
-                         Text="Type director" Height="23" Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}">
-                        </TextBox>
-                        <TextBox x:Name="directorBox" Margin="0,6" IsEnabled="{Binding ElementName=authorCBox, Path=IsChecked}"
+                         Text="Type title" Height="23" Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}" Margin="42,0,0.2,0"/>
+                        <TextBox x:Name="directorBox" Margin="42,6,0.2,6" IsEnabled="{Binding ElementName=authorCBox, Path=IsChecked}"
                                  Text="Type director" Height="23" Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}"/>
                         <ComboBox Name="ScoreComboBox" ItemsSource="{Binding Source={StaticResource scoreDataFromEnum}}"
                                   SelectedItem="{Binding Path=CurrentScore}" Height="20" Margin="185,0,180.8,0" Width="140" IsEnabled="{Binding ElementName=scoreCBox, Path=IsChecked}">
@@ -139,6 +141,7 @@
                     <StackPanel Name="ButtonPanel" Margin="10,0" Orientation="Horizontal" Grid.Row="1">
                         <Button Content="Find Movies" HorizontalAlignment="Right" Width="145" Click="Find_Click">
                             <Button.IsEnabled>
+                                <!--TUTAJ ZAMIAST CZEKBOXOW WALIDACJA-->
                                 <MultiBinding Converter="{StaticResource booleanAndConverter}">
                                     <Binding ElementName="titleCBox" Path="IsChecked"/>
                                     <Binding ElementName="authorCBox" Path="IsChecked"/>
@@ -158,8 +161,12 @@
                                     <StackPanel  Margin="5,5,5,5">
                                         <TextBlock Text="{Binding Title, StringFormat='Title: {0}'}"/>
                                         <TextBlock Text="{Binding Director, StringFormat='Director: {0}'}"/>
-                                        <TextBlock Name="ScoreBlock" Text="{Binding Score, StringFormat='Rating: {0}'}" Visibility="Collapsed"/>
-                                        <TextBlock Name="TypeBlock" Text="{Binding Type, StringFormat='Type: {0}'}" Visibility="Collapsed"/>
+                                        <Expander Header="Details">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Name="ScoreBlock" Text="{Binding Score, StringFormat='Rating: {0} '}" />
+                                                <TextBlock Name="TypeBlock" Text="{Binding Type, StringFormat=' Type: {0}'}" />
+                                            </StackPanel>
+                                        </Expander>
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>

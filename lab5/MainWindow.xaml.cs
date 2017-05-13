@@ -34,6 +34,7 @@ namespace lab5
         {
             this.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
             BooleanAndConverter booleanAndConverter = new BooleanAndConverter();
+            Validator Validator = new Validator();
             InitializeComponent();
             movies = new ObservableCollection<Movie>();
             this.DataContext = movies;
@@ -222,7 +223,12 @@ namespace lab5
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            return value.ToString().Length == 0 ? new ValidationResult(false, " value cannot be empty.") : ValidationResult.ValidResult;
+            if (value.ToString().Length == 0)
+            {
+                Console.WriteLine("WALIDACJA, CHUJ NIE REAKCJA");
+                return new ValidationResult(false, "value cannot be empty");
+            }
+            return ValidationResult.ValidResult;
         }
     }
 
