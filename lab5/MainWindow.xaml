@@ -39,6 +39,35 @@
                 <x:Type TypeName="local:MovieType"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        <ControlTemplate x:Key="ValidationErrorTemplate">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+                    <Grid Width="12" Height="12">
+                        <Ellipse Width="12" Height="12" 
+
+            Fill="Red" HorizontalAlignment="Center" 
+
+            VerticalAlignment="Center"
+
+                     ></Ellipse>
+                        <TextBlock Foreground="White" FontWeight="Heavy" 
+
+                        FontSize="8" HorizontalAlignment="Center" 
+
+                        VerticalAlignment="Center" TextAlignment="Center"
+
+                       ToolTip="{Binding ElementName=ErrorAdorner, 
+                       Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+
+                       >X</TextBlock>
+                    </Grid>
+                </StackPanel>
+                <AdornedElementPlaceholder 
+
+        x:Name="ErrorAdorner" ></AdornedElementPlaceholder>
+            </DockPanel>
+        </ControlTemplate>
+
     </Window.Resources>
     <Grid  Background="{StaticResource windowBackground}">
         <DockPanel>
@@ -92,9 +121,12 @@
                         <CheckBox Margin="6" Name="scoreCBox">By rating</CheckBox>
                         <CheckBox Margin="6" Name="typeCBox">By type</CheckBox>
                     </StackPanel>
-                    <StackPanel Grid.Row ="0" Name="BoxPanel" Margin="237,0,0.4,0.4">
-                        <TextBox Name="titleBox" IsEnabled="{Binding ElementName=titleCBox, Path=IsChecked}" Text="type title" Height="23"/>
-                        <TextBox x:Name="directorBox" Margin="0,6" IsEnabled="{Binding ElementName=authorCBox, Path=IsChecked}" Text="type director" Height="24"/>
+                    <StackPanel Grid.Row ="0" Name="TextBoxPanel" Margin="237,0,0.4,0.4">
+                        <TextBox Name="titleBox" IsEnabled="{Binding ElementName=titleCBox, Path=IsChecked}" 
+                         Text="Type director" Height="23" Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}">
+                        </TextBox>
+                        <TextBox x:Name="directorBox" Margin="0,6" IsEnabled="{Binding ElementName=authorCBox, Path=IsChecked}"
+                                 Text="Type director" Height="23" Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}"/>
                         <ComboBox Name="ScoreComboBox" ItemsSource="{Binding Source={StaticResource scoreDataFromEnum}}"
                                   SelectedItem="{Binding Path=CurrentScore}" Height="20" Margin="185,0,180.8,0" Width="140" IsEnabled="{Binding ElementName=scoreCBox, Path=IsChecked}">
                         </ComboBox>
@@ -106,6 +138,22 @@
                         <Button Content="Find movies" HorizontalAlignment="Right" Width="145" Click="Find_Click"/>
                         <Button Content="Delete movies" Margin="10,0" HorizontalAlignment="Right" Width="143"/>
                     </StackPanel>
+                    <ListBox ItemsSource="{Binding Source={StaticResource MoviesCvs}}" 
+                             Margin="0,0,0,-8" Background="Transparent" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}"
+                             Grid.Row="2" AlternationCount="2" Visibility="Hidden" Name="SeachList">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <StackPanel  Margin="5,5,5,5">
+                                        <TextBlock Text="{Binding Title, StringFormat='Title: {0}'}"/>
+                                        <TextBlock Text="{Binding Director, StringFormat='Director: {0}'}"/>
+                                        <TextBlock Name="ScoreBlock" Text="{Binding Score, StringFormat='Rating: {0}'}" Visibility="Collapsed"/>
+                                        <TextBlock Name="TypeBlock" Text="{Binding Type, StringFormat='Type: {0}'}" Visibility="Collapsed"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </TabItem>
             <TabItem Header="Edit">

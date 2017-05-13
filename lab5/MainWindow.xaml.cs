@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -16,7 +17,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 using lab5.Annotations;
+using Microsoft.Win32;
 
 namespace lab5
 {
@@ -30,9 +33,9 @@ namespace lab5
         public MainWindow()
         {
             this.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+            InitializeComponent();
             movies = new ObservableCollection<Movie>();
             this.DataContext = movies;
-            InitializeComponent();
             ScoreComboBox.ItemsSource = Enum.GetValues(typeof(Score)).Cast<Score>();
             TypeComboBox.ItemsSource = Enum.GetValues(typeof(MovieType)).Cast<MovieType>();
         }
@@ -81,25 +84,73 @@ namespace lab5
         private void Import(object sender, RoutedEventArgs e)
         {
             //TODO : Deserializacja XML i zaladowanie tego na liste
+            XmlSerializer SerializerObj = new XmlSerializer(movies.GetType());
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.DefaultExt = ".xml";
+            openFileDialog.Filter = "XML documents (.xml) |*.xml";
+            Nullable<bool> result = openFileDialog.ShowDialog();
+            if (result == true)
+            {
+                var path = openFileDialog.FileName;
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    ObservableCollection<Movie> moviesTemp = new ObservableCollection<Movie>();
+                    moviesTemp = (ObservableCollection<Movie>) SerializerObj.Deserialize(reader);
+                    foreach (Movie movie in moviesTemp)
+                        movies.Add(movie);
+                }
+            }
         }
 
         private void Export(object sender, RoutedEventArgs e)
         {
             //TODO : Serializacja zawartosci listy i zapisanie tego w pliku XML
+            XmlSerializer SerializerObj = new XmlSerializer(movies.GetType());
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = "Movie list"; // default file name
+            saveFileDialog.DefaultExt = ".xml"; // default file extension
+            saveFileDialog.Filter = "XML documents (.xml) |*.xml"; // filter by extension
+            Nullable<bool> result = saveFileDialog.ShowDialog();
+            if (result == true)
+            {
+                var path = saveFileDialog.FileName;
+                using (StreamWriter writer = new StreamWriter(path))
+                {
+                    SerializerObj.Serialize(writer, movies);
+                }
+            }
         }
         #endregion
 
         private void Find_Click(object sender, RoutedEventArgs e)
         {
-            ;
+            if (authorCBox.IsChecked == false && titleCBox.IsChecked == false && 
+                scoreCBox.IsChecked == false && typeCBox.IsChecked == false)
+            {
+                Console.WriteLine("Warrning, none of the criteria was specified");
+                MessageBox.Show("You must specifie some criteria", "Warrning", MessageBoxButton.OK);
+            }
+            else
+            {
+                SeachList.Visibility = Visibility.Visible;
+            }
         }
     }
+    [Serializable()]
     public class Movie
     { 
         public string Title { get; set; }
         public string Director { get; set; }
         public Score Score { get; set; }
         public MovieType Type { get; set; }
+    }
+
+    public class Validator : ValidationRule
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            return value.ToString().Length == 0 ? new ValidationResult(false, " value cannot be empty.") : ValidationResult.ValidResult;
+        }
     }
 
     #region Enums
