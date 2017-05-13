@@ -33,6 +33,7 @@ namespace lab5
         public MainWindow()
         {
             this.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+            BooleanAndConverter booleanAndConverter = new BooleanAndConverter();
             InitializeComponent();
             movies = new ObservableCollection<Movie>();
             this.DataContext = movies;
@@ -120,11 +121,12 @@ namespace lab5
                 }
             }
         }
+
         #endregion
 
         private void Find_Click(object sender, RoutedEventArgs e)
         {
-            if (authorCBox.IsChecked == false && titleCBox.IsChecked == false && 
+            if (authorCBox.IsChecked == false && titleCBox.IsChecked == false &&
                 scoreCBox.IsChecked == false && typeCBox.IsChecked == false)
             {
                 Console.WriteLine("Warrning, none of the criteria was specified");
@@ -135,7 +137,58 @@ namespace lab5
                 SeachList.Visibility = Visibility.Visible;
             }
         }
+
+    #region GhettoFabSolution
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T) child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
+        }
+        private void viewList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach (var Item in FindVisualChildren<ListBoxItem>(viewList))
+            {
+                if (Item.IsSelected == true)
+                {
+                    foreach (var tb in FindVisualChildren<TextBlock>(Item))
+                    {
+                        if (tb.Name.ToString() == "Hidden" || tb.Name.ToString() == "Hidden2")
+                        {
+                            tb.Visibility = Visibility.Visible;
+                            Console.WriteLine("Details visible");
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var tb in FindVisualChildren<TextBlock>(Item))
+                    {
+                        if (tb.Name.ToString() == "Hidden" || tb.Name.ToString() == "Hidden2")
+                        {
+                            tb.Visibility = Visibility.Collapsed;
+                            Console.WriteLine("Details hidden");
+                        }
+                    }
+                }
+            }
+        }
+    #endregion
     }
+
     [Serializable()]
     public class Movie
     { 
@@ -145,6 +198,26 @@ namespace lab5
         public MovieType Type { get; set; }
     }
 
+    public class BooleanAndConverter : IMultiValueConverter
+        {
+            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            {
+                foreach (object value in values)
+                {
+                    if ((value is bool) && (bool) value == false)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+            {
+                throw new NotSupportedException("BooleanAndConverter is a OneWay converter.");
+            }
+        }
+
     public class Validator : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
@@ -152,6 +225,7 @@ namespace lab5
             return value.ToString().Length == 0 ? new ValidationResult(false, " value cannot be empty.") : ValidationResult.ValidResult;
         }
     }
+
 
     #region Enums
     public enum Score

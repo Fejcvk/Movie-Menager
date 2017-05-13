@@ -67,7 +67,6 @@
         x:Name="ErrorAdorner" ></AdornedElementPlaceholder>
             </DockPanel>
         </ControlTemplate>
-
     </Window.Resources>
     <Grid  Background="{StaticResource windowBackground}">
         <DockPanel>
@@ -90,7 +89,7 @@
                     Height="Auto" VerticalAlignment="Stretch" Margin="0,22,-0.4,0.4" Background="Transparent">
             <TabItem Header="View">
                 <Grid>
-                    <ListBox ItemsSource="{Binding Source={StaticResource MoviesCvs}}" 
+                    <ListBox ItemsSource="{Binding Source={StaticResource MoviesCvs}}" Name="viewList" SelectionChanged="viewList_SelectionChanged"
                              Margin="0,0,0,-8" Background="Transparent" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}"
                              AlternationCount="2" >
                         <ListBox.ItemTemplate>
@@ -99,8 +98,8 @@
                                     <StackPanel  Margin="5,5,5,5">
                                         <TextBlock Text="{Binding Title, StringFormat='Title: {0}'}"/>
                                         <TextBlock Text="{Binding Director, StringFormat='Director: {0}'}"/>
-                                        <TextBlock Name="ScoreBlock" Text="{Binding Score, StringFormat='Rating: {0}'}" Visibility="Collapsed"/>
-                                        <TextBlock Name="TypeBlock" Text="{Binding Type, StringFormat='Type: {0}'}" Visibility="Collapsed"/>
+                                        <TextBlock Name="Hidden2" Text="{Binding Score, StringFormat='Rating: {0}'}" Visibility="Collapsed"/>
+                                        <TextBlock Name="Hidden" Text="{Binding Type, StringFormat='Type: {0}'}" Visibility="Collapsed"/>
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>
@@ -110,6 +109,9 @@
             </TabItem>
             <TabItem Header="Search">
                 <Grid>
+                    <Grid.Resources>
+                        <local:BooleanAndConverter x:Key="booleanAndConverter"/>
+                    </Grid.Resources>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="150"/>
                         <RowDefinition Height="20"/>
@@ -135,7 +137,16 @@
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Name="ButtonPanel" Margin="10,0" Orientation="Horizontal" Grid.Row="1">
-                        <Button Content="Find movies" HorizontalAlignment="Right" Width="145" Click="Find_Click"/>
+                        <Button Content="Find Movies" HorizontalAlignment="Right" Width="145" Click="Find_Click">
+                            <Button.IsEnabled>
+                                <MultiBinding Converter="{StaticResource booleanAndConverter}">
+                                    <Binding ElementName="titleCBox" Path="IsChecked"/>
+                                    <Binding ElementName="authorCBox" Path="IsChecked"/>
+                                    <Binding ElementName="scoreCBox" Path="IsChecked"/>
+                                    <Binding ElementName="typeCBox" Path="IsChecked"/>
+                                </MultiBinding>
+                            </Button.IsEnabled>
+                        </Button>
                         <Button Content="Delete movies" Margin="10,0" HorizontalAlignment="Right" Width="143"/>
                     </StackPanel>
                     <ListBox ItemsSource="{Binding Source={StaticResource MoviesCvs}}" 
@@ -164,3 +175,4 @@
         </TabControl>
     </Grid>
 </Window>
+
