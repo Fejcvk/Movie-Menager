@@ -29,15 +29,17 @@ namespace lab5
     public partial class MainWindow : Window
     {
         public ObservableCollection<Movie> movies { get; set; }
+        public ObservableCollection<Movie> searchList { get; set; }
 
         public MainWindow()
         {
             this.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
             BooleanAndConverter booleanAndConverter = new BooleanAndConverter();
-            Validator Validator = new Validator();
             InitializeComponent();
             movies = new ObservableCollection<Movie>();
+            searchList = new ObservableCollection<Movie>();
             this.DataContext = movies;
+            SeachList.ItemsSource = searchList;
             ScoreComboBox.ItemsSource = Enum.GetValues(typeof(Score)).Cast<Score>();
             TypeComboBox.ItemsSource = Enum.GetValues(typeof(MovieType)).Cast<MovieType>();
         }
@@ -127,6 +129,7 @@ namespace lab5
 
         private void Find_Click(object sender, RoutedEventArgs e)
         {
+            searchList.Clear();
             if (authorCBox.IsChecked == false && titleCBox.IsChecked == false &&
                 scoreCBox.IsChecked == false && typeCBox.IsChecked == false)
             {
@@ -135,6 +138,173 @@ namespace lab5
             }
             else
             {
+
+                string title = null;
+                string director = null;
+                Score score = Score.Terrible;
+                MovieType movietype = MovieType.Comedy;
+                if (titleBox.IsEnabled)
+                    title = titleBox.Text;
+                if (directorBox.IsEnabled)
+                    director = directorBox.Text;
+                if (ScoreComboBox.IsEnabled)
+                    score = (Score)ScoreComboBox.SelectedValue;
+                if (TypeComboBox.IsEnabled)
+                    movietype = (MovieType)TypeComboBox.SelectedValue;
+
+                //only title box enabled
+                if (titleBox.IsEnabled)
+                {
+                    var newsearchList = movies.Where(x => x.Title.Contains(title)).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Title);
+                        searchList.Add(movie);
+                    }
+                }
+                //only director box enabled
+                if (directorBox.IsEnabled)
+                {
+                    var newsearchList = movies.Where(x => x.Director.Contains(director)).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Director);
+                        searchList.Add(movie);
+                    }
+                }
+                //only score box enabled
+                if (ScoreComboBox.IsEnabled)
+                {
+                    var newsearchList = movies.Where(x => x.Score == score).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Score);
+                        searchList.Add(movie);
+                    }
+                }
+                //only type box enabled
+                if (TypeComboBox.IsEnabled)
+                {
+                    var newsearchList = movies.Where(x => x.Type == movietype).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Type);
+                        searchList.Add(movie);
+                    }
+                }
+                //only title and director enabled
+                if (titleBox.IsEnabled && directorBox.IsEnabled)
+                {
+                    searchList.Clear();
+                    var newsearchList = movies.Where(x => x.Title.Contains(title) && x.Director.Contains(director)).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Title + " " + movie.Director);
+                        searchList.Add(movie);
+                    }
+                }
+                //only title and score enabled
+                if (ScoreComboBox.IsEnabled && titleBox.IsEnabled)
+                {
+                    searchList.Clear();
+                    var newsearchList = movies.Where(x => x.Score == score && x.Title.Contains(title)).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Title + " " + movie.Score);
+                        searchList.Add(movie);
+                    }
+                }
+                //only title and type enabled
+                if (TypeComboBox.IsEnabled && titleBox.IsEnabled)
+                {
+                    searchList.Clear();
+                    var newsearchList = movies.Where(x => x.Type == movietype && x.Title.Contains(title)).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Title + " " + movie.Type);
+                        searchList.Add(movie);
+                    }
+                }
+                //only director and score enabled
+                if (ScoreComboBox.IsEnabled && directorBox.IsEnabled)
+                {
+                    searchList.Clear();
+                    var newsearchList = movies.Where(x => x.Score == score && x.Director.Contains(director)).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Score + " " + movie.Director);
+                        searchList.Add(movie);
+                    }
+
+                }
+                //only director and type enabled
+                if (TypeComboBox.IsEnabled && directorBox.IsEnabled)
+                {
+                    searchList.Clear();
+                    var newsearchList = movies.Where(x => x.Type == movietype && x.Director.Contains(director)).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Type + " " + movie.Director);
+                        searchList.Add(movie);
+                    }
+                }
+                //only score and type enabled
+                if (ScoreComboBox.IsEnabled && TypeComboBox.IsEnabled)
+                {
+                    searchList.Clear();
+                    var newsearchList = movies.Where(x => x.Score == score && x.Type == movietype).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Score + " " + movie.Type);
+                        searchList.Add(movie);
+                    }
+                }
+                //only title director score enabled
+                if (titleBox.IsEnabled && directorBox.IsEnabled && ScoreComboBox.IsEnabled)
+                {
+                    searchList.Clear();
+                    var newsearchList = movies.Where(x => x.Score == score && x.Title.Contains(title) && x.Director.Contains(director)).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Title + " " + movie.Director + " " + movie.Score);
+                        searchList.Add(movie);
+                    }
+                }
+                //only title score type enabled
+                if (titleBox.IsEnabled && ScoreComboBox.IsEnabled && TypeComboBox.IsEnabled)
+                {
+                    searchList.Clear();
+                    var newsearchList = movies.Where(x => x.Score == score && x.Title.Contains(title) && x.Type == movietype).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Title + " " + movie.Type + " " + movie.Score);
+                        searchList.Add(movie);
+                    }
+                }
+                //only  title director type
+                if (titleBox.IsEnabled && directorBox.IsEnabled && TypeComboBox.IsEnabled)
+                {
+                    searchList.Clear();
+                    var newsearchList = movies.Where(x => x.Type == movietype && x.Title.Contains(title) && x.Director.Contains(director)).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Title + " " + movie.Director + " " + movie.Type);
+                        searchList.Add(movie);
+                    }
+                }
+                //all enabled
+                if(titleBox.IsEnabled && directorBox.IsEnabled && TypeComboBox.IsEnabled && ScoreComboBox.IsEnabled)
+                {
+                    searchList.Clear();
+                    var newsearchList = movies.Where(x => x.Score == score && x.Title.Contains(title) && x.Director.Contains(director) && x.Type == movietype).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Title + " " + movie.Director + " " + movie.Score + " " + movie.Type);
+                        searchList.Add(movie);
+                    }
+
+                }
+                SeachList.ItemsSource = searchList;
                 SeachList.Visibility = Visibility.Visible;
             }
         }
@@ -187,7 +357,24 @@ namespace lab5
                 }
             }
         }
-    #endregion
+        #endregion
+
+        private void Delete(object sender, RoutedEventArgs e)
+        {
+            ObservableCollection<Movie> movietodel = new ObservableCollection<Movie>();
+            foreach (Movie movie in movies)
+            {
+                foreach (Movie movietodelete in searchList)
+                {
+                    if(movietodelete == movie)
+                        movietodel.Add(movietodelete);
+                }
+            }
+            foreach (Movie movie in movietodel)
+            {
+                movies.Remove(movie);
+            }
+        }
     }
 
     [Serializable()]
@@ -219,14 +406,33 @@ namespace lab5
             }
         }
 
+
+    public class Test
+    {
+        public Test(string _t, string _d)
+        {
+            TitleSearch = _t;
+            DirectorSearch = _d;
+        }
+        public string TitleSearch { get; set; }
+        public string DirectorSearch { get; set; }
+    }
+
     public class Validator : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            if (value.ToString().Length == 0)
+            if (value == null)
             {
-                Console.WriteLine("WALIDACJA, CHUJ NIE REAKCJA");
                 return new ValidationResult(false, "value cannot be empty");
+            }
+            else
+            {
+                if (value.ToString().Length == 0)
+                {
+                    Console.WriteLine("WALIDACJA, CHUJ NIE REAKCJA");
+                    return new ValidationResult(false, "name has to be bigger than 0 chars");
+                }
             }
             return ValidationResult.ValidResult;
         }

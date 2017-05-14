@@ -14,7 +14,7 @@
         </LinearGradientBrush>
         <CollectionViewSource x:Key="MoviesCvs" Source="{Binding}">
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="ScoreType"/>
+                <PropertyGroupDescription PropertyName="Score"/>
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
         <Style x:Key="AlternatingListViewItemStyle" TargetType="{x:Type ListBoxItem}">
@@ -43,34 +43,6 @@
                 <x:Type TypeName="local:MovieType"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        <ControlTemplate x:Key="ValidationErrorTemplate">
-            <DockPanel>
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                    <Grid Width="12" Height="12">
-                        <Ellipse Width="12" Height="12" 
-
-            Fill="Red" HorizontalAlignment="Center" 
-
-            VerticalAlignment="Center"
-
-                     ></Ellipse>
-                        <TextBlock Foreground="White" FontWeight="Heavy" 
-
-                        FontSize="8" HorizontalAlignment="Center" 
-
-                        VerticalAlignment="Center" TextAlignment="Center"
-
-                       ToolTip="{Binding ElementName=ErrorAdorner, 
-                       Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
-
-                       >X</TextBlock>
-                    </Grid>
-                </StackPanel>
-                <AdornedElementPlaceholder 
-
-        x:Name="ErrorAdorner" ></AdornedElementPlaceholder>
-            </DockPanel>
-        </ControlTemplate>
     </Window.Resources>
     <Grid  Background="{StaticResource windowBackground}">
         <DockPanel>
@@ -128,9 +100,23 @@
                     </StackPanel>
                     <StackPanel Grid.Row ="0" Name="TextBoxPanel" Margin="195,0,0.2,0.4">
                         <TextBox Name="titleBox" IsEnabled="{Binding ElementName=titleCBox, Path=IsChecked}" 
-                         Text="Type title" Height="23" Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}" Margin="42,0,0.2,0"/>
+                         Text="Type title" Height="23" Margin="42,0,0.2,0">
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <DockPanel>
+                                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                                            <Grid Width="20" Height="20">
+                                                <Ellipse Width="20" Height="20" Fill="Red" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <TextBlock Foreground="White" FontWeight="Heavy" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"/>
+                                            </Grid>
+                                        </StackPanel>
+                                        <AdornedElementPlaceholder x:Name="ErrorAdorner"/>
+                                    </DockPanel>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                        </TextBox>
                         <TextBox x:Name="directorBox" Margin="42,6,0.2,6" IsEnabled="{Binding ElementName=authorCBox, Path=IsChecked}"
-                                 Text="Type director" Height="23" Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}"/>
+                                 Text="Type director" Height="23"/>
                         <ComboBox Name="ScoreComboBox" ItemsSource="{Binding Source={StaticResource scoreDataFromEnum}}"
                                   SelectedItem="{Binding Path=CurrentScore}" Height="20" Margin="185,0,180.8,0" Width="140" IsEnabled="{Binding ElementName=scoreCBox, Path=IsChecked}">
                         </ComboBox>
@@ -140,19 +126,19 @@
                     </StackPanel>
                     <StackPanel Name="ButtonPanel" Margin="10,0" Orientation="Horizontal" Grid.Row="1">
                         <Button Content="Find Movies" HorizontalAlignment="Right" Width="145" Click="Find_Click">
-                            <Button.IsEnabled>
-                                <!--TUTAJ ZAMIAST CZEKBOXOW WALIDACJA-->
+                            <!-- <Button.IsEnabled>
+                                TODO TUTAJ ZAMIAST CZEKBOXOW WALIDACJA
                                 <MultiBinding Converter="{StaticResource booleanAndConverter}">
                                     <Binding ElementName="titleCBox" Path="IsChecked"/>
                                     <Binding ElementName="authorCBox" Path="IsChecked"/>
                                     <Binding ElementName="scoreCBox" Path="IsChecked"/>
                                     <Binding ElementName="typeCBox" Path="IsChecked"/>
                                 </MultiBinding>
-                            </Button.IsEnabled>
+                            </Button.IsEnabled> -->
                         </Button>
-                        <Button Content="Delete movies" Margin="10,0" HorizontalAlignment="Right" Width="143"/>
+                        <Button Content="Delete movies" Margin="10,0" HorizontalAlignment="Right" Width="143" Click="Delete"/>
                     </StackPanel>
-                    <ListBox ItemsSource="{Binding Source={StaticResource MoviesCvs}}" 
+                    <ListBox ItemsSource="{Binding searchList}" 
                              Margin="0,0,0,-8" Background="Transparent" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}"
                              Grid.Row="2" AlternationCount="2" Visibility="Hidden" Name="SeachList">
                         <ListBox.ItemTemplate>
