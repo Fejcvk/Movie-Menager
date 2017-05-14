@@ -72,8 +72,9 @@ namespace lab5
             searchList = new ObservableCollection<Movie>();
             SeachList.ItemsSource = searchList;
             titleBox.DataContext = new Test("Type title", "Type director");
-            directorBox.DataContext = new Test("Type title", "Type director");
+            directorBox.DataContext = titleBox.DataContext;
             this.DataContext = movies;
+            FindButton.DataContext = titleBox.DataContext;
             ScoreComboBox.ItemsSource = Enum.GetValues(typeof(Score)).Cast<Score>();
             TypeComboBox.ItemsSource = Enum.GetValues(typeof(MovieType)).Cast<MovieType>();
         }
@@ -408,6 +409,27 @@ namespace lab5
             {
                 movies.Remove(movie);
             }
+            Find_Click(sender,e);
+        }
+
+        private void scoreCBox_Checked(object sender, RoutedEventArgs e)
+        {
+            ScoreComboBox.SelectedItem = Score.Terrible;
+        }
+
+        private void typeCBox_Checked(object sender, RoutedEventArgs e)
+        {
+            TypeComboBox.SelectedItem = MovieType.Horror;
+        }
+
+        private void scoreCBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ScoreComboBox.SelectedItem = null;
+        }
+
+        private void typeCBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            TypeComboBox.SelectedItem = null;
         }
     }
 
@@ -424,11 +446,14 @@ namespace lab5
         {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
             {
-                foreach (object value in values)
+                if (values.LongLength > 0)
                 {
-                    if ((value is bool) && (bool) value == false)
+                    foreach (var value in values)
                     {
-                        return false;
+                        if (value is bool && (bool)value)
+                        {
+                            return false;
+                        }
                     }
                 }
                 return true;
@@ -439,7 +464,6 @@ namespace lab5
                 throw new NotSupportedException("BooleanAndConverter is a OneWay converter.");
             }
         }
-
 
     #region Enums
     public enum Score

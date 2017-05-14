@@ -97,8 +97,8 @@
                     </Grid.RowDefinitions>
                     <CheckBox Grid.Row="0" Margin="6" Name="titleCBox">By title</CheckBox>
                     <CheckBox Grid.Row="1" Margin="6" Name="authorCBox">By author</CheckBox>
-                    <CheckBox Grid.Row="2" Margin="6" Name="scoreCBox">By rating</CheckBox>
-                    <CheckBox Grid.Row="3" Margin="6" Name="typeCBox">By type</CheckBox>
+                    <CheckBox Grid.Row="2" Margin="6" Name="scoreCBox" Checked="scoreCBox_Checked" Unchecked="scoreCBox_Unchecked">By rating</CheckBox>
+                    <CheckBox Grid.Row="3" Margin="6" Name="typeCBox" Checked="typeCBox_Checked" Unchecked="typeCBox_Unchecked">By type</CheckBox>
                     <TextBox Grid.Row="0" Name ="titleBox" IsEnabled="{Binding ElementName=titleCBox, Path=IsChecked}" 
                         Height="20" Margin="236,10,0.4,10" MinHeight="20" MaxHeight="20"   Background="White" CaretBrush="Black">
                         <Validation.ErrorTemplate>
@@ -150,28 +150,25 @@
                         </TextBox.Text>
                     </TextBox>
                     <ComboBox Grid.Row="2" Name="ScoreComboBox" ItemsSource="{Binding Source={StaticResource scoreDataFromEnum}}"
-                                  SelectedItem="{Binding Path=CurrentScore}" Height="20" Margin="185,0,180.8,0" Width="140" IsEnabled="{Binding ElementName=scoreCBox, Path=IsChecked}">
+                                   Height="20" Margin="185,0,180.8,0" Width="140" IsEnabled="{Binding ElementName=scoreCBox, Path=IsChecked}">
                         </ComboBox>
                     <ComboBox Grid.Row="3" Name="TypeComboBox" Margin ="185,6,180.8,6" ItemsSource="{Binding Source={StaticResource typeDataFromEnum}}"
-                                  SelectedItem="{Binding Path=CurrentType}" Height="20" IsEnabled="{Binding ElementName=typeCBox, Path=IsChecked}" Width="140">
+                                   Height="20" IsEnabled="{Binding ElementName=typeCBox, Path=IsChecked}" Width="140">
                     </ComboBox>
                     <StackPanel Name="ButtonPanel" Margin="10,0" Orientation="Horizontal" Grid.Row="4">
-                        <Button Content="Find Movies" HorizontalAlignment="Right" Width="145" Click="Find_Click">
-                            <!-- <Button.IsEnabled>
-                                TODO TUTAJ ZAMIAST CZEKBOXOW WALIDACJA
-                                <MultiBinding Converter="{StaticResource booleanAndConverter}">
-                                    <Binding ElementName="titleCBox" Path="IsChecked"/>
-                                    <Binding ElementName="authorCBox" Path="IsChecked"/>
-                                    <Binding ElementName="scoreCBox" Path="IsChecked"/>
-                                    <Binding ElementName="typeCBox" Path="IsChecked"/>
-                                </MultiBinding>
-                            </Button.IsEnabled> -->
+                        <Button Name="FindButton" Content="Find Movies" HorizontalAlignment="Right" Width="145" Click="Find_Click">
+                        <Button.IsEnabled>
+                            <MultiBinding Converter="{StaticResource booleanAndConverter}">
+                                <Binding ElementName="titleBox" Path="(Validation.HasError)"/>
+                                <Binding ElementName="directorBox" Path="(Validation.HasError)"/>
+                            </MultiBinding>
+                        </Button.IsEnabled>
                         </Button>
                         <Button Content="Delete movies" Margin="10,0" HorizontalAlignment="Right" Width="143" Click="Delete"/>
                     </StackPanel>
                     <ListBox ItemsSource="{Binding searchList}" 
                              Margin="0,0,0,-8" Background="Transparent" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}"
-                             Grid.Row="2" AlternationCount="2" Visibility="Hidden" Name="SeachList">
+                             Grid.Row="5" AlternationCount="2" Visibility="Hidden" Name="SeachList">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
