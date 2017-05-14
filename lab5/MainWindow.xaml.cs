@@ -27,6 +27,7 @@ namespace lab5
     /// Interaction logic for MainWindow.xaml
     /// </summary>
 
+    #region Validator + TestClass data context
     public class Validator : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
@@ -38,8 +39,7 @@ namespace lab5
             else
             {
                 if (value.ToString().Length == 0)
-                {
-                    Console.WriteLine("WALIDACJA, CHUJ NIE REAKCJA");
+                {;
                     return new ValidationResult(false, "name has to be bigger than 0 chars");
                 }
             }
@@ -57,7 +57,7 @@ namespace lab5
         public string DirectorSearch { get; set; }
         public string TitleSearch { get; set; }
     }
-
+    #endregion
     public partial class MainWindow : Window
     { 
         public ObservableCollection<Movie> movies { get; set; }
@@ -161,7 +161,55 @@ namespace lab5
         }
 
         #endregion
+        #region GhettoFabSolution
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
 
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
+        }
+        private void viewList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach (var Item in FindVisualChildren<ListBoxItem>(viewList))
+            {
+                if (Item.IsSelected == true)
+                {
+                    foreach (var tb in FindVisualChildren<TextBlock>(Item))
+                    {
+                        if (tb.Name.ToString() == "Hidden" || tb.Name.ToString() == "Hidden2")
+                        {
+                            tb.Visibility = Visibility.Visible;
+                            Console.WriteLine("Details visible");
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var tb in FindVisualChildren<TextBlock>(Item))
+                    {
+                        if (tb.Name.ToString() == "Hidden" || tb.Name.ToString() == "Hidden2")
+                        {
+                            tb.Visibility = Visibility.Collapsed;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+        #region Czekboxy + Guziki ghetto solution
         private void Find_Click(object sender, RoutedEventArgs e)
         {
             searchList.Clear();
@@ -343,57 +391,7 @@ namespace lab5
                 SeachList.Visibility = Visibility.Visible;
             }
         }
-
-    #region GhettoFabSolution
-        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T) child;
-                    }
-
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
-            }
-        }
-        private void viewList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            foreach (var Item in FindVisualChildren<ListBoxItem>(viewList))
-            {
-                if (Item.IsSelected == true)
-                {
-                    foreach (var tb in FindVisualChildren<TextBlock>(Item))
-                    {
-                        if (tb.Name.ToString() == "Hidden" || tb.Name.ToString() == "Hidden2")
-                        {
-                            tb.Visibility = Visibility.Visible;
-                            Console.WriteLine("Details visible");
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var tb in FindVisualChildren<TextBlock>(Item))
-                    {
-                        if (tb.Name.ToString() == "Hidden" || tb.Name.ToString() == "Hidden2")
-                        {
-                            tb.Visibility = Visibility.Collapsed;
-                            Console.WriteLine("Details hidden");
-                        }
-                    }
-                }
-            }
-        }
-        #endregion
-
+        
         private void Delete(object sender, RoutedEventArgs e)
         {
             ObservableCollection<Movie> movietodel = new ObservableCollection<Movie>();
@@ -431,6 +429,7 @@ namespace lab5
         {
             TypeComboBox.SelectedItem = null;
         }
+        #endregion
     }
 
     [Serializable()]
