@@ -26,8 +26,40 @@ namespace lab5
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+
+    public class Validator : ValidationRule
     {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            if (value == null)
+            {
+                return new ValidationResult(false, "value cannot be empty");
+            }
+            else
+            {
+                if (value.ToString().Length == 0)
+                {
+                    Console.WriteLine("WALIDACJA, CHUJ NIE REAKCJA");
+                    return new ValidationResult(false, "name has to be bigger than 0 chars");
+                }
+            }
+            return ValidationResult.ValidResult;
+        }
+    }
+
+    public class Test
+    {
+        public Test(string _t, string _d)
+        {
+            TitleSearch = _t;
+            DirectorSearch = _d;
+        }
+        public string DirectorSearch { get; set; }
+        public string TitleSearch { get; set; }
+    }
+
+    public partial class MainWindow : Window
+    { 
         public ObservableCollection<Movie> movies { get; set; }
         public ObservableCollection<Movie> searchList { get; set; }
 
@@ -38,8 +70,10 @@ namespace lab5
             InitializeComponent();
             movies = new ObservableCollection<Movie>();
             searchList = new ObservableCollection<Movie>();
-            this.DataContext = movies;
             SeachList.ItemsSource = searchList;
+            titleBox.DataContext = new Test("Type title", "Type director");
+            directorBox.DataContext = new Test("Type title", "Type director");
+            this.DataContext = movies;
             ScoreComboBox.ItemsSource = Enum.GetValues(typeof(Score)).Cast<Score>();
             TypeComboBox.ItemsSource = Enum.GetValues(typeof(MovieType)).Cast<MovieType>();
         }
@@ -405,38 +439,6 @@ namespace lab5
                 throw new NotSupportedException("BooleanAndConverter is a OneWay converter.");
             }
         }
-
-
-    public class Test
-    {
-        public Test(string _t, string _d)
-        {
-            TitleSearch = _t;
-            DirectorSearch = _d;
-        }
-        public string TitleSearch { get; set; }
-        public string DirectorSearch { get; set; }
-    }
-
-    public class Validator : ValidationRule
-    {
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
-        {
-            if (value == null)
-            {
-                return new ValidationResult(false, "value cannot be empty");
-            }
-            else
-            {
-                if (value.ToString().Length == 0)
-                {
-                    Console.WriteLine("WALIDACJA, CHUJ NIE REAKCJA");
-                    return new ValidationResult(false, "name has to be bigger than 0 chars");
-                }
-            }
-            return ValidationResult.ValidResult;
-        }
-    }
 
 
     #region Enums

@@ -88,43 +88,74 @@
                         <local:BooleanAndConverter x:Key="booleanAndConverter"/>
                     </Grid.Resources>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="150"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
                         <RowDefinition Height="20"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Name="CheckBoxPanel" Margin="0,0,581.4,0.4">
-                        <CheckBox Margin="6" Name="titleCBox">By title</CheckBox>
-                        <CheckBox Margin="6" Name="authorCBox">By author</CheckBox>
-                        <CheckBox Margin="6" Name="scoreCBox">By rating</CheckBox>
-                        <CheckBox Margin="6" Name="typeCBox">By type</CheckBox>
-                    </StackPanel>
-                    <StackPanel Grid.Row ="0" Name="TextBoxPanel" Margin="195,0,0.2,0.4">
-                        <TextBox Name="titleBox" IsEnabled="{Binding ElementName=titleCBox, Path=IsChecked}" 
-                         Text="Type title" Height="23" Margin="42,0,0.2,0">
-                            <Validation.ErrorTemplate>
+                    <CheckBox Grid.Row="0" Margin="6" Name="titleCBox">By title</CheckBox>
+                    <CheckBox Grid.Row="1" Margin="6" Name="authorCBox">By author</CheckBox>
+                    <CheckBox Grid.Row="2" Margin="6" Name="scoreCBox">By rating</CheckBox>
+                    <CheckBox Grid.Row="3" Margin="6" Name="typeCBox">By type</CheckBox>
+                    <TextBox Grid.Row="0" Name ="titleBox" IsEnabled="{Binding ElementName=titleCBox, Path=IsChecked}" 
+                        Height="20" Margin="236,10,0.4,10" MinHeight="20" MaxHeight="20"   Background="White" CaretBrush="Black">
+                        <Validation.ErrorTemplate>
                                 <ControlTemplate>
                                     <DockPanel>
-                                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                                            <Grid Width="20" Height="20">
-                                                <Ellipse Width="20" Height="20" Fill="Red" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                <TextBlock Foreground="White" FontWeight="Heavy" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"/>
+                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                                        <Grid Width="20" Height="20">
+                                                <Ellipse Width="20" Height="20" Fill="Red" HorizontalAlignment="Center"  VerticalAlignment="Center"></Ellipse>
+                                                <TextBlock Foreground="White" FontWeight="Heavy" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" ToolTip="{Binding ElementName=ErrorAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">X</TextBlock>
                                             </Grid>
                                         </StackPanel>
-                                        <AdornedElementPlaceholder x:Name="ErrorAdorner"/>
+                                        <AdornedElementPlaceholder x:Name="ErrorAdorner" ></AdornedElementPlaceholder>
                                     </DockPanel>
                                 </ControlTemplate>
                             </Validation.ErrorTemplate>
+                            <TextBox.Text>
+                                <Binding Path="TitleSearch" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:Validator>
+
+                                        </local:Validator>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
                         </TextBox>
-                        <TextBox x:Name="directorBox" Margin="42,6,0.2,6" IsEnabled="{Binding ElementName=authorCBox, Path=IsChecked}"
-                                 Text="Type director" Height="23"/>
-                        <ComboBox Name="ScoreComboBox" ItemsSource="{Binding Source={StaticResource scoreDataFromEnum}}"
+                    <TextBox x:Name="directorBox" Grid.Row="1" Margin="236,8,0.4,8" IsEnabled="{Binding ElementName=authorCBox, Path=IsChecked}"
+                                 MinHeight="20" MaxHeight="20"   Background="White" CaretBrush="Black">
+                        <Validation.ErrorTemplate>
+                            <ControlTemplate>
+                                <DockPanel>
+                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                                        <Grid Width="20" Height="20">
+                                            <Ellipse Width="20" Height="20" Fill="Red" HorizontalAlignment="Center"  VerticalAlignment="Center"></Ellipse>
+                                            <TextBlock Foreground="White" FontWeight="Heavy" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" ToolTip="{Binding ElementName=ErrorAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">X</TextBlock>
+                                        </Grid>
+                                    </StackPanel>
+                                    <AdornedElementPlaceholder x:Name="ErrorAdorner" ></AdornedElementPlaceholder>
+                                </DockPanel>
+                            </ControlTemplate>
+                        </Validation.ErrorTemplate>
+                        <TextBox.Text>
+                            <Binding Path="DirectorSearch" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <local:Validator>
+
+                                    </local:Validator>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <ComboBox Grid.Row="2" Name="ScoreComboBox" ItemsSource="{Binding Source={StaticResource scoreDataFromEnum}}"
                                   SelectedItem="{Binding Path=CurrentScore}" Height="20" Margin="185,0,180.8,0" Width="140" IsEnabled="{Binding ElementName=scoreCBox, Path=IsChecked}">
                         </ComboBox>
-                        <ComboBox Name="TypeComboBox" Margin ="185,6,180.8,6" ItemsSource="{Binding Source={StaticResource typeDataFromEnum}}"
+                    <ComboBox Grid.Row="3" Name="TypeComboBox" Margin ="185,6,180.8,6" ItemsSource="{Binding Source={StaticResource typeDataFromEnum}}"
                                   SelectedItem="{Binding Path=CurrentType}" Height="20" IsEnabled="{Binding ElementName=typeCBox, Path=IsChecked}" Width="140">
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Name="ButtonPanel" Margin="10,0" Orientation="Horizontal" Grid.Row="1">
+                    </ComboBox>
+                    <StackPanel Name="ButtonPanel" Margin="10,0" Orientation="Horizontal" Grid.Row="4">
                         <Button Content="Find Movies" HorizontalAlignment="Right" Width="145" Click="Find_Click">
                             <!-- <Button.IsEnabled>
                                 TODO TUTAJ ZAMIAST CZEKBOXOW WALIDACJA
@@ -162,7 +193,7 @@
             </TabItem>
             <TabItem Header="Edit">
                 <Grid>
-                    <DataGrid Margin="10,10,-0.4,0" ItemsSource="{Binding}" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalAlignment="Top"/>
+                    <DataGrid Name="myGrid" Margin="10,10,-0.4,0" ItemsSource="{Binding}" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
         </TabControl>
