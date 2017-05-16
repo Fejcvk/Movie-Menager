@@ -208,7 +208,7 @@ namespace lab5
                 }
             }
         }
-        #endregion
+        #endregion  
         #region Czekboxy + Guziki ghetto solution
         private void Find_Click(object sender, RoutedEventArgs e)
         {
@@ -375,6 +375,19 @@ namespace lab5
                         searchList.Add(movie);
                     }
                 }
+
+                // only director score type
+                if(directorBox.IsEnabled && ScoreComboBox.IsEnabled && TypeComboBox.IsEnabled)
+                {
+                    searchList.Clear();
+                    var newsearchList = movies.Where(x => x.Type == movietype && x.Director.Contains(director) && x.Score == score).ToList();
+                    foreach (Movie movie in newsearchList)
+                    {
+                        Console.WriteLine(movie.Score + " " + movie.Director + " " + movie.Type);
+                        searchList.Add(movie);
+                    }
+
+                }
                 //all enabled
                 if(titleBox.IsEnabled && directorBox.IsEnabled && TypeComboBox.IsEnabled && ScoreComboBox.IsEnabled)
                 {
@@ -407,7 +420,7 @@ namespace lab5
             {
                 movies.Remove(movie);
             }
-            Find_Click(sender,e);
+            SeachList.Visibility = Visibility.Collapsed;
         }
 
         private void scoreCBox_Checked(object sender, RoutedEventArgs e)
@@ -428,6 +441,16 @@ namespace lab5
         private void typeCBox_Unchecked(object sender, RoutedEventArgs e)
         {
             TypeComboBox.SelectedItem = null;
+        }
+
+        private void titleCBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            titleBox.Text = "Type title";
+        }
+
+        private void authorCBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            directorBox.Text = "Type director";
         }
         #endregion
     }

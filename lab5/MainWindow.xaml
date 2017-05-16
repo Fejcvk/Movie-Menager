@@ -95,8 +95,8 @@
                         <RowDefinition Height="20"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <CheckBox Grid.Row="0" Margin="6" Name="titleCBox">By title</CheckBox>
-                    <CheckBox Grid.Row="1" Margin="6" Name="authorCBox">By author</CheckBox>
+                    <CheckBox Grid.Row="0" Margin="6" Name="titleCBox" Unchecked="titleCBox_Unchecked">By title</CheckBox>
+                    <CheckBox Grid.Row="1" Margin="6" Name="authorCBox" Unchecked="authorCBox_Unchecked">By author</CheckBox>
                     <CheckBox Grid.Row="2" Margin="6" Name="scoreCBox" Checked="scoreCBox_Checked" Unchecked="scoreCBox_Unchecked">By rating</CheckBox>
                     <CheckBox Grid.Row="3" Margin="6" Name="typeCBox" Checked="typeCBox_Checked" Unchecked="typeCBox_Unchecked">By type</CheckBox>
                     <TextBox Grid.Row="0" Name ="titleBox" IsEnabled="{Binding ElementName=titleCBox, Path=IsChecked}" 
